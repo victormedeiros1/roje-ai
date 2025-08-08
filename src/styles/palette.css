@@ -9,7 +9,7 @@
   --gray-50: #f8fafc;
   --gray-100: #f1f5f9;
   --gray-200: #e2e8f0;
-  --gray-300: #cbd5e1;
+  --gray-300: #D2D1D1;
   --gray-400: #94a3b8;
   --gray-500: #64748b;
   --gray-600: #475569;
@@ -19,7 +19,7 @@
   --gray-950: #020617;
 
   /* ===== Primary Colors ===== */
-  --primary-light: #8183f4;
-  --primary-main: #6366f1;
-  --primary-dark: #363885;
+  --primary-light: #28386C;
+  --primary-main: #121931;
+  --primary-dark: #101528;
 }
