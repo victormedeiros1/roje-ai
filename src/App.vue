@@ -1,5 +1,7 @@
 <template>
-	<Roje />
+	<Container>
+		<Roje />
+	</Container>
 </template>
 
 <script setup lang="ts">
