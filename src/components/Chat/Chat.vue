@@ -9,6 +9,7 @@
 						v-for="acao in acoesProntasTexto"
 						:key="acao"
 						:label="acao"
+						@click="enviarMensagemPronta(acao)"
 					/>
 				</div>
 			</div>
@@ -48,7 +49,7 @@ import Container from '@/components/Container/Container.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { useAnimations } from '@/animations/animations'
-import { onMounted, ref, defineEmits } from 'vue'
+import { onMounted, ref, defineEmits, nextTick } from 'vue'
 
 interface Mensagem {
 	tipo: 'human' | 'roje'
@@ -66,6 +67,12 @@ const acoesProntas = ref<HTMLElement | null>(null)
 const mensagemAtual = ref<string>('')
 const mensagens = ref<Mensagem[]>([])
 
+const acoesProntasTexto = [
+	'Me dê dicas do que fazer com meu banco de horas',
+	'Quero tirar um day off esse mês',
+	'Posso sair mais cedo hoje?'
+]
+
 const enviarMensagem = () => {
 	const mensagemHumana: Mensagem = {
 		tipo: 'human',
@@ -74,6 +81,31 @@ const enviarMensagem = () => {
 
 	mensagens.value.push(mensagemHumana)
 	mensagemAtual.value = ''
+
+	gerarMensagemRoje()
+	scrollarParaOFinal()
+}
+
+const scrollarParaOFinal = async () => {
+	await nextTick()
+	setTimeout(() => {
+		const mensagens = document.querySelector('.content__mensagens') as HTMLElement
+		if (mensagens) {
+			mensagens.scrollTo({
+				top: mensagens.scrollHeight,
+				behavior: 'smooth'
+			})
+		}
+	}, 50)
+}
+
+const enviarMensagemPronta = (acao: string) => {
+	const mensagemHumana: Mensagem = {
+		tipo: 'human',
+		texto: acao
+	}
+
+	mensagens.value.push(mensagemHumana)
 
 	gerarMensagemRoje()
 }
@@ -90,12 +122,6 @@ const gerarMensagemRoje = () => {
 const fecharChat = () => {
 	emit('fechar')
 }
-
-const acoesProntasTexto = [
-	'Me dê dicas do que fazer com meu banco de horas',
-	'Quero tirar um day off esse mês',
-	'Posso sair mais cedo hoje?'
-]
 
 onMounted(() => {
 	fadeIn(acoesProntas, { delay: 0.2 })
@@ -204,6 +230,11 @@ onMounted(() => {
 				&--human {
 					background-color: var(--gray-200);
 					box-shadow: var(--shadow-baloon);
+				}
+
+				&--roje {
+					padding-top: 0;
+					padding-right: 0;
 				}
 			}
 		}
