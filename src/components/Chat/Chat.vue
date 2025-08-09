@@ -1,6 +1,6 @@
 <template>
 	<div class="chat-container" @click="fecharChat">
-		<div class="chat" @click.stop>
+		<div class="chat" @click.stop ref="chat">
 			<div class="header">
 				<div class="header__acoes-prontas" ref="acoesProntas">
 					<Button
@@ -68,6 +68,7 @@ const emit = defineEmits<{ fechar: [] }>()
 const tituloDoChat = ref<HTMLElement | null>(null)
 const campoDeTexto = ref<HTMLElement | null>(null)
 const acoesProntas = ref<HTMLElement | null>(null)
+const chat = ref<HTMLElement | null>(null)
 
 const mensagemAtual = ref<string>('')
 const mensagens = ref<Mensagem[]>([])
@@ -144,6 +145,7 @@ const fecharChat = () => {
 }
 
 onMounted(() => {
+	fadeIn(chat, { delay: 0.1 })
 	fadeIn(acoesProntas, { delay: 0.2 })
 	fadeIn(tituloDoChat, { delay: 0.4 })
 	fadeIn(campoDeTexto, { delay: 0.6 })
