@@ -1,17 +1,24 @@
 <template>
 	<div class="chat-container" @click="fecharChat">
 		<div class="chat" @click.stop>
-			<div class="chat__acoes-prontas" ref="acoesProntas">
-				<Button
-					class="chat__acao-pronta"
-					text
-					v-for="acao in acoesProntasTexto"
-					:key="acao"
-					:label="acao"
-				/>
+			<div class="chat__header">
+				<div class="chat__acoes-prontas" ref="acoesProntas">
+					<Button
+						class="chat__acao-pronta"
+						text
+						v-for="acao in acoesProntasTexto"
+						:key="acao"
+						:label="acao"
+					/>
+				</div>
 			</div>
-			<h1 class="chat__title" ref="tituloDoChat">Olá, eu sou o Roje!</h1>
-			<textarea class="chat__campo" ref="campoDeTexto" />
+			<div class="chat__content">
+				<h1 class="chat__title" ref="tituloDoChat">Olá, eu sou o Roje!</h1>
+			</div>
+			<div class="chat__footer">
+				<InputText class="chat__campo" ref="campoDeTexto" />
+				<Button class="chat__enviar" text icon="pi pi-send" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -19,6 +26,7 @@
 <script setup lang="ts">
 import Container from '@/components/Container/Container.vue'
 import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
 import { useAnimations } from '@/animations/animations'
 import { onMounted, ref, defineEmits } from 'vue'
 
@@ -73,6 +81,14 @@ onMounted(() => {
 	backdrop-filter: blur(12px);
 	padding: var(--p-16);
 
+	&__footer {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: var(--p-8);
+	}
+
 	&__acoes-prontas {
 		display: flex;
 		flex-wrap: wrap;
@@ -84,6 +100,13 @@ onMounted(() => {
 		border-radius: 6px;
 		border: 1px solid var(--gray-300);
 		padding: var(--p-8);
+	}
+
+	&__enviar {
+		height: 100%;
+		font-size: var(--fs-14);
+		border-radius: 6px;
+		border: 1px solid var(--gray-300);
 	}
 
 	&__campo {
