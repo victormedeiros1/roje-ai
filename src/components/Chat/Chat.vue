@@ -37,7 +37,12 @@
 			<div class="footer">
 				<form class="footer__form" @submit.prevent="enviarMensagem">
 					<InputText class="footer__campo" ref="campoDeTexto" v-model="mensagemAtual" />
-					<Button class="footer__enviar" text icon="pi pi-send" />
+					<Button
+						class="footer__enviar"
+						text
+						icon="pi pi-send"
+						:disabled="mensagemVazia"
+					/>
 				</form>
 			</div>
 		</div>
@@ -49,7 +54,7 @@ import Container from '@/components/Container/Container.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { useAnimations } from '@/animations/animations'
-import { onMounted, ref, defineEmits, nextTick } from 'vue'
+import { onMounted, ref, defineEmits, nextTick, computed } from 'vue'
 
 interface Mensagem {
 	tipo: 'human' | 'roje'
@@ -73,11 +78,17 @@ const acoesProntasTexto = [
 	'Posso sair mais cedo hoje?'
 ]
 
+const mensagemVazia = computed(() => {
+	return mensagemAtual.value.trim() === ''
+})
+
 const enviarMensagem = () => {
 	const mensagemHumana: Mensagem = {
 		tipo: 'human',
 		texto: mensagemAtual.value
 	}
+
+	if (mensagemAtual.value.trim() === '') return
 
 	mensagens.value.push(mensagemHumana)
 	mensagemAtual.value = ''
@@ -99,7 +110,7 @@ const scrollarParaOFinal = async () => {
 	}, 50)
 }
 
-const enviarMensagemPronta = (acao: string) => {
+const enviarMensagemPronta = async (acao: string) => {
 	const mensagemHumana: Mensagem = {
 		tipo: 'human',
 		texto: acao
@@ -107,10 +118,19 @@ const enviarMensagemPronta = (acao: string) => {
 
 	mensagens.value.push(mensagemHumana)
 
-	gerarMensagemRoje()
+	await gerarMensagemRoje()
 }
 
-const gerarMensagemRoje = () => {
+const gerarMensagemRoje = async () => {
+	const mensagemPensando: Mensagem = {
+		tipo: 'roje',
+		texto: 'Pensando... 🤔'
+	}
+
+	mensagens.value.push(mensagemPensando)
+	await new Promise(resolve => setTimeout(resolve, 1000))
+	mensagens.value.pop()
+
 	const mensagemRoje: Mensagem = {
 		tipo: 'roje',
 		texto: 'Olá, eu sou o Roje!'
@@ -228,7 +248,7 @@ onMounted(() => {
 				padding: var(--p-16);
 
 				&--human {
-					background-color: var(--gray-200);
+					background-color: var(--gray-100);
 					box-shadow: var(--shadow-baloon);
 				}
 
