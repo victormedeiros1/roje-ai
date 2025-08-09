@@ -211,9 +211,8 @@ onMounted(async () => {
 .chat {
 	position: absolute;
 	width: 60%;
-	height: 80%;
+	height: 90%;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	flex-direction: column;
 	background: rgba(255, 255, 255, 0.8);
@@ -224,8 +223,6 @@ onMounted(async () => {
 	padding: var(--p-16);
 
 	.header {
-		height: 20%;
-
 		&__acoes-prontas {
 			display: flex;
 			flex-wrap: wrap;
@@ -241,12 +238,13 @@ onMounted(async () => {
 	}
 
 	.content {
+		overflow-y: auto;
 		width: 100%;
-		height: 70%;
+		height: 100%;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
 		align-items: center;
+		padding: var(--p-32) var(--p-16) 0 var(--p-16);
 
 		&__title {
 			margin: 0;
@@ -325,7 +323,6 @@ onMounted(async () => {
 
 	.footer {
 		width: 100%;
-		height: 10%;
 
 		&__form {
 			display: flex;
