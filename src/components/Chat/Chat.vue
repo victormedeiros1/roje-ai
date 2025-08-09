@@ -14,8 +14,18 @@
 				</div>
 			</div>
 			<div class="content">
-				<h1 class="content__title" ref="tituloDoChat">Olá, eu sou o Roje!</h1>
-				<h3 class="content__subtitulo" ref="subtituloDoChat">
+				<h1
+					class="content__title"
+					:class="`content__title--${diminuirTamanhoDosTitulos ? 'menor' : ''}`"
+					ref="tituloDoChat"
+				>
+					Olá, eu sou o Roje!
+				</h1>
+				<h3
+					class="content__subtitulo"
+					:class="`content__subtitulo--${diminuirTamanhoDosTitulos ? 'menor' : ''}`"
+					ref="subtituloDoChat"
+				>
 					O seu assistente de banco de horas
 				</h3>
 				<div class="content__mensagens">
@@ -90,6 +100,23 @@ const mensagemVazia = computed(() => {
 	return mensagemAtual.value.trim() === ''
 })
 
+const diminuirTamanhoDosTitulos = computed(() => {
+	return mensagens.value.length >= 3
+})
+
+const scrollarParaOFinal = async () => {
+	await nextTick()
+	setTimeout(() => {
+		const mensagens = document.querySelector('.content__mensagens') as HTMLElement
+		if (mensagens) {
+			mensagens.scrollTo({
+				top: mensagens.scrollHeight,
+				behavior: 'smooth'
+			})
+		}
+	}, 50)
+}
+
 const enviarMensagem = () => {
 	const mensagemHumana: Mensagem = {
 		tipo: 'human',
@@ -105,19 +132,6 @@ const enviarMensagem = () => {
 	scrollarParaOFinal()
 }
 
-const scrollarParaOFinal = async () => {
-	await nextTick()
-	setTimeout(() => {
-		const mensagens = document.querySelector('.content__mensagens') as HTMLElement
-		if (mensagens) {
-			mensagens.scrollTo({
-				top: mensagens.scrollHeight,
-				behavior: 'smooth'
-			})
-		}
-	}, 50)
-}
-
 const enviarMensagemPronta = async (acao: string) => {
 	const mensagemHumana: Mensagem = {
 		tipo: 'human',
@@ -127,6 +141,25 @@ const enviarMensagemPronta = async (acao: string) => {
 	mensagens.value.push(mensagemHumana)
 
 	await gerarMensagemRoje()
+}
+
+const buscarValorDoBancoDeHoras = async () => {
+	const mensagemPensando: Mensagem = {
+		tipo: 'roje',
+		texto: 'Estou consultando o banco de horas... 🤔'
+	}
+
+	mensagens.value.push(mensagemPensando)
+	await new Promise(resolve => setTimeout(resolve, 3000))
+	mensagens.value.pop()
+
+	const mensagemRoje: Mensagem = {
+		tipo: 'roje',
+		texto: 'Você tem um saldo de 10 horas no seu banco de horas'
+	}
+
+	mensagens.value.push(mensagemRoje)
+	diminuirTamanhoDosTitulos()
 }
 
 const gerarMensagemRoje = async () => {
@@ -151,12 +184,16 @@ const fecharChat = () => {
 	emit('fechar')
 }
 
-onMounted(() => {
+onMounted(async () => {
 	fadeIn(chat, { delay: 0.2 })
 	fadeIn(acoesProntas, { delay: 0.4 })
 	fadeIn(tituloDoChat, { delay: 0.6 })
 	fadeIn(subtituloDoChat, { delay: 0.8 })
 	fadeIn(footer, { delay: 1 })
+
+	setTimeout(() => {
+		buscarValorDoBancoDeHoras()
+	}, 2000)
 })
 </script>
 
@@ -212,7 +249,19 @@ onMounted(() => {
 		align-items: center;
 
 		&__title {
-			margin: -16px;
+			margin: 0;
+			&--menor {
+				font-size: var(--fs-24);
+				transition: 0.5s;
+			}
+		}
+
+		&__subtitulo {
+			margin-top: 0;
+			&--menor {
+				font-size: var(--fs-14);
+				transition: 0.5s;
+			}
 		}
 
 		&__mensagens {
