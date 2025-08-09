@@ -1,6 +1,10 @@
 <template>
-	<Chat v-if="rojeAberto" />
-	<Tooltip v-if="!rojeAberto" :message="message" />
+	<Chat v-if="rojeAberto" @fechar="fecharChat" />
+	<Tooltip
+		v-if="!rojeAberto && tooltipVisivel"
+		:message="message"
+		@fechar="fecharTooltip"
+	/>
 	<div class="roje" @click="abrirRoje" ref="roje">
 		<img class="roje__icone" src="@/assets/images/safe.svg" />
 	</div>
@@ -16,12 +20,21 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 const { fadeIn } = useAnimations()
 
 const rojeAberto = ref<Boolean>(false)
+const tooltipVisivel = ref<Boolean>(true)
 const message = ref<String>('')
 
 const roje = ref<HTMLElement | null>(null)
 
 const abrirRoje = (): void => {
 	rojeAberto.value = !rojeAberto.value
+}
+
+const fecharChat = (): void => {
+	rojeAberto.value = false
+}
+
+const fecharTooltip = (): void => {
+	tooltipVisivel.value = false
 }
 
 const sortearUmaMensagem = () => {

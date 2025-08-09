@@ -1,6 +1,6 @@
 <template>
-	<div class="chat-container">
-		<div class="chat">
+	<div class="chat-container" @click="fecharChat">
+		<div class="chat" @click.stop>
 			<div class="ghost"></div>
 			<h1 class="chat__title" ref="tituloDoChat">Olá</h1>
 			<textarea class="chat__campo" ref="campoDeTexto" />
@@ -11,12 +11,18 @@
 <script setup lang="ts">
 import Container from '@/components/Container/Container.vue'
 import { useAnimations } from '@/animations/animations'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, defineEmits } from 'vue'
 
 const { fadeIn } = useAnimations()
 
+const emit = defineEmits<{ fechar: [] }>()
+
 const tituloDoChat = ref<HTMLElement | null>(null)
 const campoDeTexto = ref<HTMLElement | null>(null)
+
+const fecharChat = () => {
+	emit('fechar')
+}
 
 onMounted(() => {
 	fadeIn(tituloDoChat)

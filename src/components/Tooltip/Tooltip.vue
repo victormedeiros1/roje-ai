@@ -1,14 +1,19 @@
 <template>
 	<div class="tooltip">
 		<span class="tooltip__message">{{ message }}</span>
+		<button class="tooltip__close" @click="fecharTooltip">×</button>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { useAnimations } from '@/animations/animations'
-import { defineProps } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 
 defineProps<{ message: string }>()
+const emit = defineEmits<{ fechar: [] }>()
+
+const fecharTooltip = () => {
+	emit('fechar')
+}
 </script>
 
 <style scoped lang="scss">
