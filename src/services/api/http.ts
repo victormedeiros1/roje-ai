@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 // Configuração base do axios
 const http = axios.create({
 	baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/',
-	timeout: 10000,
+	timeout: 100000000,
 	headers: {
 		'Content-Type': 'application/json'
 	}

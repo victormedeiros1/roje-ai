@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<div class="footer" ref="footer">
-				<form class="footer__form" @submit.prevent="enviarMensagem">
+				<form class="footer__form" @submit.prevent="enviarMensagemParaRoje">
 					<InputText class="footer__campo" ref="campoDeTexto" v-model="mensagemAtual" />
 					<Button
 						class="footer__enviar"
@@ -118,7 +118,52 @@ const scrollarParaOFinal = async () => {
 	}, 50)
 }
 
-const enviarMensagem = () => {
+// const enviarMensagem = () => {
+// 	const mensagemHumana: Mensagem = {
+// 		tipo: 'human',
+// 		texto: mensagemAtual.value
+// 	}
+
+// 	if (mensagemAtual.value.trim() === '') return
+
+// 	mensagens.value.push(mensagemHumana)
+// 	mensagemAtual.value = ''
+
+// 	gerarMensagemRoje()
+// 	scrollarParaOFinal()
+// }
+
+// const enviarMensagemPronta = async (acao: string) => {
+// 	const mensagemHumana: Mensagem = {
+// 		tipo: 'human',
+// 		texto: acao
+// 	}
+
+// 	mensagens.value.push(mensagemHumana)
+
+// 	await gerarMensagemRoje()
+// }
+
+// const buscarValorDoBancoDeHoras = async () => {
+// 	const mensagemPensando: Mensagem = {
+// 		tipo: 'roje',
+// 		texto: 'Estou consultando o banco de horas... 🤔'
+// 	}
+
+// 	mensagens.value.push(mensagemPensando)
+// 	await new Promise(resolve => setTimeout(resolve, 3000))
+// 	mensagens.value.pop()
+
+// 	const mensagemRoje: Mensagem = {
+// 		tipo: 'roje',
+// 		texto: 'Você tem um saldo de 10 horas no seu banco de horas'
+// 	}
+
+// 	mensagens.value.push(mensagemRoje)
+// 	diminuirTamanhoDosTitulos()
+// }
+
+const enviarMensagemParaRoje = async () => {
 	const mensagemHumana: Mensagem = {
 		tipo: 'human',
 		texto: mensagemAtual.value
@@ -127,40 +172,16 @@ const enviarMensagem = () => {
 	if (mensagemAtual.value.trim() === '') return
 
 	mensagens.value.push(mensagemHumana)
-	mensagemAtual.value = ''
 
-	gerarMensagemRoje()
-	scrollarParaOFinal()
-}
-
-const enviarMensagemPronta = async (acao: string) => {
-	const mensagemHumana: Mensagem = {
-		tipo: 'human',
-		texto: acao
-	}
-
-	mensagens.value.push(mensagemHumana)
-
-	await gerarMensagemRoje()
-}
-
-const buscarValorDoBancoDeHoras = async () => {
-	const mensagemPensando: Mensagem = {
-		tipo: 'roje',
-		texto: 'Estou consultando o banco de horas... 🤔'
-	}
-
-	mensagens.value.push(mensagemPensando)
-	await new Promise(resolve => setTimeout(resolve, 3000))
-	mensagens.value.pop()
-
-	const mensagemRoje: Mensagem = {
-		tipo: 'roje',
-		texto: 'Você tem um saldo de 10 horas no seu banco de horas'
-	}
-
-	mensagens.value.push(mensagemRoje)
-	diminuirTamanhoDosTitulos()
+	const historicoMensagens = mensagens.value.map(mensagem => mensagem.texto)
+	console.log('historicoMensagens', historicoMensagens)
+	const idMockado = '6851698affff7c68babce67b'
+	const response = await api.post('/agente-analista-de-banco-de-horas', {
+		id_de_empregado: idMockado,
+		historico_mensagens: [],
+		mensagem_atual: mensagemAtual.value
+	})
+	console.log(response)
 }
 
 const gerarMensagemRoje = async () => {
@@ -191,10 +212,6 @@ onMounted(async () => {
 	fadeIn(tituloDoChat, { delay: 0.6 })
 	fadeIn(subtituloDoChat, { delay: 0.8 })
 	fadeIn(footer, { delay: 1 })
-
-	setTimeout(() => {
-		buscarValorDoBancoDeHoras()
-	}, 2000)
 })
 </script>
 
