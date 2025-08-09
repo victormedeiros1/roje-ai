@@ -1,5 +1,6 @@
 <template>
 	<Chat v-if="rojeAberto" />
+	<Tooltip v-if="!rojeAberto" :message="message" />
 	<div class="roje" @click="abrirRoje">
 		<img class="roje__icone" src="@/assets/images/safe.svg" />
 	</div>
@@ -8,13 +9,29 @@
 <script setup lang="ts">
 import Container from '@/components/Container/Container.vue'
 import Chat from '@/components/Chat/Chat.vue'
-import { ref } from 'vue'
+import Tooltip from '@/components/Tooltip/Tooltip.vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
 
 const rojeAberto = ref<Boolean>(false)
+const message = ref<String>('')
 
-function abrirRoje() {
+const abrirRoje = (): void => {
 	rojeAberto.value = !rojeAberto.value
 }
+
+const sortearUmaMensagem = () => {
+	const messages = [
+		'Eu sei que você está devendo horas, quer saber um jeito fácil de resolver isso?',
+		'Parece que você trabalhou mais que o esperado. Parabéns pela dedicação, que tal usar seu banco de horas para sair um pouco mais cedo?',
+		'Você tem 49 horas no seu banco de horas, que tal tirar um dayoff para descansar? Tenho uma data bem interessante para você.'
+	]
+
+	message.value = messages[Math.floor(Math.random() * messages.length)]
+}
+
+onBeforeMount(() => {
+	sortearUmaMensagem()
+})
 </script>
 
 <style scoped lang="scss">
@@ -33,15 +50,5 @@ function abrirRoje() {
 	border: 3px solid var(--gray-300);
 	box-shadow: 0 0 10px 0 rgb(0, 0, 0, 0.2);
 	z-index: var(--roje);
-
-	// &:hover {
-	// 	animation: floatEffect 1s infinite alternate;
-	// }
-
-	// @keyframes floatEffect {
-	// 	100% {
-	// 		transform: translateY(-10px);
-	// 	}
-	// }
 }
 </style>
