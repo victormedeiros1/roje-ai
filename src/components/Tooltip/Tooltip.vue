@@ -5,7 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+import { useAnimations } from '@/animations/animations'
+import { defineProps } from 'vue'
 
 defineProps<{ message: string }>()
 </script>
@@ -21,6 +22,23 @@ defineProps<{ message: string }>()
 	border-radius: 8px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	border: 3px solid var(--gray-300);
+	opacity: 1;
+
+	animation: fadeInRight 0.6s ease;
+
+	@keyframes fadeInRight {
+		0% {
+			opacity: 0;
+		}
+		50% {
+			transform: translateY(20px);
+			opacity: 0;
+		}
+		100% {
+			transform: translateX(0);
+			opacity: 1;
+		}
+	}
 
 	&__message {
 		color: var(--light);

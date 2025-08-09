@@ -12,20 +12,15 @@
 import Container from '@/components/Container/Container.vue'
 import { useAnimations } from '@/animations/animations'
 import { onMounted, ref } from 'vue'
-import gsap from 'gsap'
 
 const { fadeIn } = useAnimations()
 
 const tituloDoChat = ref<HTMLElement | null>(null)
 const campoDeTexto = ref<HTMLElement | null>(null)
 
-const dispararAnimacoes = () => {
+onMounted(() => {
 	fadeIn(tituloDoChat)
 	fadeIn(campoDeTexto)
-}
-
-onMounted(() => {
-	dispararAnimacoes()
 })
 </script>
 
