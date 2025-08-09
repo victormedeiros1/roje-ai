@@ -49,7 +49,8 @@ const sortearUmaMensagem = () => {
 }
 
 const buscarInformacoesDoBancoDeHoras = async () => {
-	const response = await api.get('https://jsonplaceholder.typicode.com/posts/1')
+	const idMockado = '6851698affff7c68babce67b'
+	const response = await api.get(`/banco-de-horas/${idMockado}`)
 	console.log(response)
 }
 
