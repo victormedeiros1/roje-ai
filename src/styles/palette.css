@@ -22,4 +22,7 @@
   --primary-light: #28386C;
   --primary-main: #121931;
   --primary-dark: #0b0e1d;
+
+  /* ===== Shadows ===== */
+  --shadow-baloon: 0 4px 4px 0 rgba(0, 0, 0, 0.1);
 }

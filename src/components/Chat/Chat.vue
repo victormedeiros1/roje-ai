@@ -1,10 +1,10 @@
 <template>
 	<div class="chat-container" @click="fecharChat">
 		<div class="chat" @click.stop>
-			<div class="chat__header">
-				<div class="chat__acoes-prontas" ref="acoesProntas">
+			<div class="header">
+				<div class="header__acoes-prontas" ref="acoesProntas">
 					<Button
-						class="chat__acao-pronta"
+						class="header__acao-pronta"
 						text
 						v-for="acao in acoesProntasTexto"
 						:key="acao"
@@ -12,12 +12,32 @@
 					/>
 				</div>
 			</div>
-			<div class="chat__content">
-				<h1 class="chat__title" ref="tituloDoChat">Olá, eu sou o Roje!</h1>
+			<div class="content">
+				<h1 class="content__title" ref="tituloDoChat">Olá, eu sou o Roje!</h1>
+				<div class="content__mensagens">
+					<div
+						class="mensagem"
+						:class="`mensagem--${mensagem.tipo}`"
+						v-for="mensagem in mensagens"
+						:key="mensagem.texto"
+					>
+						<span
+							class="mensagem__usuario"
+							:class="`mensagem__usuario--${mensagem.tipo}`"
+						>
+							{{ mensagem.tipo === 'human' ? 'Eu' : 'Roje' }}
+						</span>
+						<div class="mensagem__texto" :class="`mensagem__texto--${mensagem.tipo}`">
+							{{ mensagem.texto }}
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="chat__footer">
-				<InputText class="chat__campo" ref="campoDeTexto" />
-				<Button class="chat__enviar" text icon="pi pi-send" />
+			<div class="footer">
+				<form class="footer__form" @submit.prevent="enviarMensagem">
+					<InputText class="footer__campo" ref="campoDeTexto" v-model="mensagemAtual" />
+					<Button class="footer__enviar" text icon="pi pi-send" />
+				</form>
 			</div>
 		</div>
 	</div>
@@ -30,6 +50,11 @@ import InputText from 'primevue/inputtext'
 import { useAnimations } from '@/animations/animations'
 import { onMounted, ref, defineEmits } from 'vue'
 
+interface Mensagem {
+	tipo: 'human' | 'roje'
+	texto: string
+}
+
 const { fadeIn } = useAnimations()
 
 const emit = defineEmits<{ fechar: [] }>()
@@ -37,6 +62,30 @@ const emit = defineEmits<{ fechar: [] }>()
 const tituloDoChat = ref<HTMLElement | null>(null)
 const campoDeTexto = ref<HTMLElement | null>(null)
 const acoesProntas = ref<HTMLElement | null>(null)
+
+const mensagemAtual = ref<string>('')
+const mensagens = ref<Mensagem[]>([])
+
+const enviarMensagem = () => {
+	const mensagemHumana: Mensagem = {
+		tipo: 'human',
+		texto: mensagemAtual.value
+	}
+
+	mensagens.value.push(mensagemHumana)
+	mensagemAtual.value = ''
+
+	gerarMensagemRoje()
+}
+
+const gerarMensagemRoje = () => {
+	const mensagemRoje: Mensagem = {
+		tipo: 'roje',
+		texto: 'Olá, eu sou o Roje!'
+	}
+
+	mensagens.value.push(mensagemRoje)
+}
 
 const fecharChat = () => {
 	emit('fechar')
@@ -81,40 +130,109 @@ onMounted(() => {
 	backdrop-filter: blur(12px);
 	padding: var(--p-16);
 
-	&__footer {
+	.header {
+		height: 10%;
+
+		&__acoes-prontas {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--p-8);
+		}
+
+		&__acao-pronta {
+			font-size: var(--fs-14);
+			border-radius: 6px;
+			border: 1px solid var(--gray-300);
+			padding: var(--p-8);
+		}
+	}
+
+	.content {
 		width: 100%;
+		height: 80%;
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
+		justify-content: center;
 		align-items: center;
-		gap: var(--p-8);
+
+		&__mensagens {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: var(--g-8);
+			padding: var(--p-32) var(--p-16);
+			overflow-y: auto;
+		}
+
+		.mensagem {
+			display: flex;
+			flex-direction: column;
+			animation: fadeIn 0.5s ease-in-out;
+			gap: var(--g-4);
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+
+			&--roje {
+				align-self: flex-end;
+			}
+
+			&__usuario {
+				font-size: var(--fs-12);
+				font-weight: 600;
+
+				&--roje {
+					align-self: flex-end;
+				}
+			}
+
+			&__texto {
+				display: flex;
+				flex-direction: column;
+				width: fit-content;
+				font-size: var(--fs-14);
+				border-radius: 6px;
+				gap: var(--g-4);
+				padding: var(--p-16);
+
+				&--human {
+					background-color: var(--gray-200);
+					box-shadow: var(--shadow-baloon);
+				}
+			}
+		}
 	}
 
-	&__acoes-prontas {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--p-8);
-	}
-
-	&__acao-pronta {
-		font-size: var(--fs-14);
-		border-radius: 6px;
-		border: 1px solid var(--gray-300);
-		padding: var(--p-8);
-	}
-
-	&__enviar {
-		height: 100%;
-		font-size: var(--fs-14);
-		border-radius: 6px;
-		border: 1px solid var(--gray-300);
-	}
-
-	&__campo {
+	.footer {
 		width: 100%;
-		border: 1px solid var(--gray-300);
-		border-radius: 6px;
-		resize: none;
-		padding: var(--p-16);
+		height: 10%;
+
+		&__form {
+			display: flex;
+			align-items: center;
+			gap: var(--p-8);
+		}
+
+		&__enviar {
+			height: 100%;
+			font-size: var(--fs-14);
+			border-radius: 6px;
+			border: 1px solid var(--gray-300);
+		}
+
+		&__campo {
+			width: 100%;
+			border: 1px solid var(--gray-300);
+			border-radius: 6px;
+			resize: none;
+			padding: var(--p-16);
+		}
 	}
 }
 </style>
