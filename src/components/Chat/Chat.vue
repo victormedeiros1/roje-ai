@@ -67,6 +67,7 @@ import Container from '@/components/Container/Container.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { useAnimations } from '@/animations/animations'
+import { api } from '@/services/api/http'
 import { onMounted, ref, defineEmits, nextTick, computed } from 'vue'
 
 interface Mensagem {

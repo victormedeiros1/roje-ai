@@ -1,5 +1,5 @@
 <template>
-	<Chat v-if="rojeAberto" @fechar="fecharChat" />
+	<Chat v-if="rojeAberto" @fechar="fecharRoje" />
 	<Tooltip
 		v-if="!rojeAberto && tooltipVisivel"
 		:message="message"
@@ -15,6 +15,7 @@ import Container from '@/components/Container/Container.vue'
 import Chat from '@/components/Chat/Chat.vue'
 import Tooltip from '@/components/Tooltip/Tooltip.vue'
 import { useAnimations } from '@/animations/animations'
+import { api } from '@/services/api/http'
 import { ref, onMounted, onBeforeMount } from 'vue'
 
 const { fadeIn } = useAnimations()
@@ -29,7 +30,7 @@ const abrirRoje = (): void => {
 	rojeAberto.value = !rojeAberto.value
 }
 
-const fecharChat = (): void => {
+const fecharRoje = (): void => {
 	rojeAberto.value = false
 }
 
@@ -47,15 +48,22 @@ const sortearUmaMensagem = () => {
 	message.value = messages[Math.floor(Math.random() * messages.length)]
 }
 
+const buscarInformacoesDoBancoDeHoras = async () => {
+	const response = await api.get('https://jsonplaceholder.typicode.com/posts/1')
+	console.log(response)
+}
+
 onBeforeMount(() => {
 	sortearUmaMensagem()
 })
 
-onMounted(() => {
+onMounted(async () => {
 	fadeIn(roje, {
 		x: 20,
 		y: 0
 	})
+
+	await buscarInformacoesDoBancoDeHoras()
 })
 </script>
 
