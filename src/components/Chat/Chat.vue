@@ -15,6 +15,9 @@
 			</div>
 			<div class="content">
 				<h1 class="content__title" ref="tituloDoChat">Olá, eu sou o Roje!</h1>
+				<h3 class="content__subtitulo" ref="subtituloDoChat">
+					O seu assistente de banco de horas
+				</h3>
 				<div class="content__mensagens">
 					<div
 						class="mensagem"
@@ -34,7 +37,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="footer">
+			<div class="footer" ref="footer">
 				<form class="footer__form" @submit.prevent="enviarMensagem">
 					<InputText class="footer__campo" ref="campoDeTexto" v-model="mensagemAtual" />
 					<Button
@@ -66,9 +69,12 @@ const { fadeIn } = useAnimations()
 const emit = defineEmits<{ fechar: [] }>()
 
 const tituloDoChat = ref<HTMLElement | null>(null)
+const subtituloDoChat = ref<HTMLElement | null>(null)
 const campoDeTexto = ref<HTMLElement | null>(null)
 const acoesProntas = ref<HTMLElement | null>(null)
 const chat = ref<HTMLElement | null>(null)
+const footer = ref<HTMLElement | null>(null)
+const enviar = ref<HTMLElement | null>(null)
 
 const mensagemAtual = ref<string>('')
 const mensagens = ref<Mensagem[]>([])
@@ -76,7 +82,8 @@ const mensagens = ref<Mensagem[]>([])
 const acoesProntasTexto = [
 	'Me dê dicas do que fazer com meu banco de horas',
 	'Quero tirar um day off esse mês',
-	'Posso sair mais cedo hoje?'
+	'Posso sair mais cedo hoje?',
+	'Quantas horas extras preciso fazer para compensar meu banco atualmente?'
 ]
 
 const mensagemVazia = computed(() => {
@@ -145,10 +152,11 @@ const fecharChat = () => {
 }
 
 onMounted(() => {
-	fadeIn(chat, { delay: 0.1 })
-	fadeIn(acoesProntas, { delay: 0.2 })
-	fadeIn(tituloDoChat, { delay: 0.4 })
-	fadeIn(campoDeTexto, { delay: 0.6 })
+	fadeIn(chat, { delay: 0.2 })
+	fadeIn(acoesProntas, { delay: 0.4 })
+	fadeIn(tituloDoChat, { delay: 0.6 })
+	fadeIn(subtituloDoChat, { delay: 0.8 })
+	fadeIn(footer, { delay: 1 })
 })
 </script>
 
@@ -179,7 +187,7 @@ onMounted(() => {
 	padding: var(--p-16);
 
 	.header {
-		height: 10%;
+		height: 20%;
 
 		&__acoes-prontas {
 			display: flex;
@@ -197,11 +205,15 @@ onMounted(() => {
 
 	.content {
 		width: 100%;
-		height: 80%;
+		height: 70%;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+
+		&__title {
+			margin: -16px;
+		}
 
 		&__mensagens {
 			width: 100%;
