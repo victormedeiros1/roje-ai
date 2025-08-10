@@ -43,7 +43,7 @@ const sortearUmaMensagem = () => {
 	const messages = [
 		'Eu sei que você está devendo horas, quer saber um jeito fácil de resolver isso?',
 		'Parece que você trabalhou mais que o esperado. Parabéns pela dedicação, que tal usar seu banco de horas para sair um pouco mais cedo?',
-		'Você tem 49 horas no seu banco de horas, que tal tirar um dayoff para descansar? Tenho uma data bem interessante para você.'
+		'Você tem bastante horas acumuladas, que tal tirar um dayoff para descansar? Tenho uma data bem interessante para você.'
 	]
 
 	message.value = messages[Math.floor(Math.random() * messages.length)]

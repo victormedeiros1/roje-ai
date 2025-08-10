@@ -262,12 +262,9 @@ onMounted(async () => {
 
 			&__texto {
 				background-color: var(--gray-300);
-				display: flex;
-				flex-direction: column;
 				width: fit-content;
 				font-size: var(--fs-14);
 				border-radius: 6px;
-				gap: var(--g-4);
 
 				&--human {
 					background-color: var(--gray-100);
