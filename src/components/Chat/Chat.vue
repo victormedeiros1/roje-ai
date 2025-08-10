@@ -9,7 +9,7 @@
 						v-for="acao in acoesProntasTexto"
 						:key="acao"
 						:label="acao"
-						@click="enviarMensagemPronta(acao)"
+						@click="enviarMensagemParaRoje(acao)"
 					/>
 				</div>
 			</div>
@@ -41,20 +41,20 @@
 						>
 							{{ mensagem.tipo === 'human' ? 'Eu' : 'Roje' }}
 						</span>
-						<div class="mensagem__texto" :class="`mensagem__texto--${mensagem.tipo}`">
-							{{ mensagem.texto }}
+						<div class="mensagem__texto" :class="`mensagem__texto--${mensagem.tipo}`" v-html="mensagem.texto">
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="footer" ref="footer">
-				<form class="footer__form" @submit.prevent="enviarMensagemParaRoje">
+				<form class="footer__form" @submit.prevent="enviarMensagemParaRoje()">
 					<InputText class="footer__campo" ref="campoDeTexto" v-model="mensagemAtual" />
 					<Button
 						class="footer__enviar"
 						text
 						icon="pi pi-send"
 						:disabled="mensagemVazia"
+						@click="enviarMensagemParaRoje()"
 					/>
 				</form>
 			</div>
@@ -63,17 +63,18 @@
 </template>
 
 <script setup lang="ts">
-import Container from '@/components/Container/Container.vue'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import { useAnimations } from '@/animations/animations'
 import { api } from '@/services/api/http'
-import { onMounted, ref, defineEmits, nextTick, computed } from 'vue'
+import { onMounted, ref, defineEmits, nextTick, computed, defineProps, watch } from 'vue'
 
 interface Mensagem {
 	tipo: 'human' | 'roje'
 	texto: string
 }
+
+const props = defineProps<{ primeiraMensagem: string }>()
 
 const { fadeIn } = useAnimations()
 
@@ -85,7 +86,6 @@ const campoDeTexto = ref<HTMLElement | null>(null)
 const acoesProntas = ref<HTMLElement | null>(null)
 const chat = ref<HTMLElement | null>(null)
 const footer = ref<HTMLElement | null>(null)
-const enviar = ref<HTMLElement | null>(null)
 
 const mensagemAtual = ref<string>('')
 const mensagens = ref<Mensagem[]>([])
@@ -105,7 +105,7 @@ const diminuirTamanhoDosTitulos = computed(() => {
 	return mensagens.value.length >= 3
 })
 
-const scrollarParaOFinal = async () => {
+const rolarParaFim = async () => {
 	await nextTick()
 	setTimeout(() => {
 		const mensagens = document.querySelector('.content__mensagens') as HTMLElement
@@ -118,88 +118,31 @@ const scrollarParaOFinal = async () => {
 	}, 50)
 }
 
-// const enviarMensagem = () => {
-// 	const mensagemHumana: Mensagem = {
-// 		tipo: 'human',
-// 		texto: mensagemAtual.value
-// 	}
-
-// 	if (mensagemAtual.value.trim() === '') return
-
-// 	mensagens.value.push(mensagemHumana)
-// 	mensagemAtual.value = ''
-
-// 	gerarMensagemRoje()
-// 	scrollarParaOFinal()
-// }
-
-// const enviarMensagemPronta = async (acao: string) => {
-// 	const mensagemHumana: Mensagem = {
-// 		tipo: 'human',
-// 		texto: acao
-// 	}
-
-// 	mensagens.value.push(mensagemHumana)
-
-// 	await gerarMensagemRoje()
-// }
-
-// const buscarValorDoBancoDeHoras = async () => {
-// 	const mensagemPensando: Mensagem = {
-// 		tipo: 'roje',
-// 		texto: 'Estou consultando o banco de horas... 🤔'
-// 	}
-
-// 	mensagens.value.push(mensagemPensando)
-// 	await new Promise(resolve => setTimeout(resolve, 3000))
-// 	mensagens.value.pop()
-
-// 	const mensagemRoje: Mensagem = {
-// 		tipo: 'roje',
-// 		texto: 'Você tem um saldo de 10 horas no seu banco de horas'
-// 	}
-
-// 	mensagens.value.push(mensagemRoje)
-// 	diminuirTamanhoDosTitulos()
-// }
-
-const enviarMensagemParaRoje = async () => {
-	const mensagemHumana: Mensagem = {
-		tipo: 'human',
-		texto: mensagemAtual.value
+const enviarMensagemParaRoje = async (acao?: string) => {
+	const mensagem: Mensagem = {
+		tipo: "human",
+		texto: acao ?? mensagemAtual.value
 	}
 
-	if (mensagemAtual.value.trim() === '') return
+	
+	const parametros = {
+		id_de_empregado: '6897c71e89a236dda372b51c',
+		historico_mensagens: mensagens.value,
+		mensagem_atual: acao ?? mensagemAtual.value
+	}
 
-	mensagens.value.push(mensagemHumana)
-
-	const historicoMensagens = mensagens.value.map(mensagem => mensagem.texto)
-	console.log('historicoMensagens', historicoMensagens)
-	const idMockado = '6851698affff7c68babce67b'
-	const response = await api.post('/agente-analista-de-banco-de-horas', {
-		id_de_empregado: idMockado,
-		historico_mensagens: [],
-		mensagem_atual: mensagemAtual.value
+	
+	const response = await api.post('/agente-analista-de-banco-de-horas/sincrono', {
+		...parametros
 	})
-	console.log(response)
-}
+	mensagens.value.push(mensagem)
+	
+	mensagens.value.push({
+		tipo: "roje",
+		texto: response.resposta[response.resposta.length - 1]
+	})
 
-const gerarMensagemRoje = async () => {
-	const mensagemPensando: Mensagem = {
-		tipo: 'roje',
-		texto: 'Pensando... 🤔'
-	}
-
-	mensagens.value.push(mensagemPensando)
-	await new Promise(resolve => setTimeout(resolve, 1000))
-	mensagens.value.pop()
-
-	const mensagemRoje: Mensagem = {
-		tipo: 'roje',
-		texto: 'Olá, eu sou o Roje!'
-	}
-
-	mensagens.value.push(mensagemRoje)
+	await rolarParaFim()
 }
 
 const fecharChat = () => {
@@ -212,7 +155,16 @@ onMounted(async () => {
 	fadeIn(tituloDoChat, { delay: 0.6 })
 	fadeIn(subtituloDoChat, { delay: 0.8 })
 	fadeIn(footer, { delay: 1 })
+
+	mensagens.value.push({
+		tipo: "roje",
+		texto: props.primeiraMensagem
+	})
 })
+
+// watch(mensagens.value, () => {
+// 	const divMensagem = document.querySelector('#mensagem-texto')
+// })
 </script>
 
 <style scoped lang="scss">
@@ -304,15 +256,15 @@ onMounted(async () => {
 				}
 			}
 
-			&--roje {
+			&--human {
 				align-self: flex-end;
-			}
+			} 
 
 			&__usuario {
 				font-size: var(--fs-12);
 				font-weight: 600;
-
-				&--roje {
+				
+				&--human {
 					align-self: flex-end;
 				}
 			}
@@ -333,7 +285,7 @@ onMounted(async () => {
 
 				&--roje {
 					padding-top: 0;
-					padding-right: 0;
+					padding-left: 0;
 				}
 			}
 		}

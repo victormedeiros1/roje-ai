@@ -9,6 +9,7 @@
 import { defineProps, defineEmits } from 'vue'
 
 defineProps<{ message: string }>()
+
 const emit = defineEmits<{ fechar: [] }>()
 
 const fecharTooltip = () => {

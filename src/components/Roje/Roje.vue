@@ -1,5 +1,5 @@
 <template>
-	<Chat v-if="rojeAberto" @fechar="fecharRoje" />
+	<Chat v-if="rojeAberto" @fechar="fecharRoje" :primeiraMensagem="primeiraMensagem" />
 	<Tooltip
 		v-if="!rojeAberto && tooltipVisivel"
 		:message="message"
@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import Container from '@/components/Container/Container.vue'
 import Chat from '@/components/Chat/Chat.vue'
 import Tooltip from '@/components/Tooltip/Tooltip.vue'
 import { useAnimations } from '@/animations/animations'
@@ -23,6 +22,7 @@ const { fadeIn } = useAnimations()
 const rojeAberto = ref<Boolean>(false)
 const tooltipVisivel = ref<Boolean>(true)
 const message = ref<String>('')
+const primeiraMensagem = ref<String>('')
 
 const roje = ref<HTMLElement | null>(null)
 
@@ -49,9 +49,10 @@ const sortearUmaMensagem = () => {
 }
 
 const buscarInformacoesDoBancoDeHoras = async () => {
-	const idMockado = '6851698affff7c68babce67b'
+	const idMockado = '6897c71e89a236dda372b51c'
 	const response = await api.get(`/banco-de-horas/${idMockado}`)
-	console.log(response)
+	
+	primeiraMensagem.value = response.resultado
 }
 
 onBeforeMount(() => {
