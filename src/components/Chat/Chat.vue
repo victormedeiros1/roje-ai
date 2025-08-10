@@ -131,10 +131,17 @@ const enviarMensagemParaRoje = async (acao?: string) => {
 		historico_mensagens: mensagens.value,
 		mensagem_atual: acao ?? mensagemAtual.value
 	}
+
+	mensagens.value.push({
+		tipo: "roje",
+		texto: "Pensando..."
+	})
 	
 	const response = await api.post('/agente-analista-de-banco-de-horas/sincrono', {
 		...parametros
 	})
+
+	mensagens.value.pop()
 	
 	mensagens.value.push({
 		tipo: "roje",
