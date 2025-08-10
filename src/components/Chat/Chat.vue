@@ -2,32 +2,22 @@
 	<div class="chat-container" @click="fecharChat">
 		<div class="chat" @click.stop ref="chat">
 			<div class="header">
-				<div class="header__acoes-prontas" ref="acoesProntas">
-					<Button
-						class="header__acao-pronta"
-						text
-						v-for="acao in acoesProntasTexto"
-						:key="acao"
-						:label="acao"
-						@click="enviarMensagemParaRoje(acao)"
-					/>
-				</div>
-			</div>
-			<div class="content">
 				<h1
-					class="content__title"
-					:class="`content__title--${diminuirTamanhoDosTitulos ? 'menor' : ''}`"
+					class="header__title"
+					:class="`header__title--${diminuirTamanhoDosTitulos ? 'menor' : ''}`"
 					ref="tituloDoChat"
 				>
 					Olá, eu sou o Roje!
 				</h1>
 				<h3
-					class="content__subtitulo"
-					:class="`content__subtitulo--${diminuirTamanhoDosTitulos ? 'menor' : ''}`"
+					class="header__subtitulo"
+					:class="`header__subtitulo--${diminuirTamanhoDosTitulos ? 'menor' : ''}`"
 					ref="subtituloDoChat"
 				>
 					O seu assistente de banco de horas
 				</h3>
+			</div>
+			<div class="content">
 				<div class="content__mensagens">
 					<div
 						class="mensagem"
@@ -47,6 +37,16 @@
 				</div>
 			</div>
 			<div class="footer" ref="footer">
+				<div class="footer__acoes-prontas" ref="acoesProntas">
+					<Button
+						class="footer__acao-pronta"
+						text
+						v-for="acao in acoesProntasTexto"
+						:key="acao"
+						:label="acao"
+						@click="enviarMensagemParaRoje(acao)"
+					/>
+				</div>
 				<form class="footer__form" @submit.prevent="enviarMensagemParaRoje()">
 					<InputText class="footer__campo" ref="campoDeTexto" v-model="mensagemAtual" />
 					<Button
@@ -161,10 +161,6 @@ onMounted(async () => {
 		texto: props.primeiraMensagem
 	})
 })
-
-// watch(mensagens.value, () => {
-// 	const divMensagem = document.querySelector('#mensagem-texto')
-// })
 </script>
 
 <style scoped lang="scss">
@@ -193,28 +189,7 @@ onMounted(async () => {
 	padding: var(--p-16);
 
 	.header {
-		&__acoes-prontas {
-			display: flex;
-			flex-wrap: wrap;
-			gap: var(--p-8);
-		}
-
-		&__acao-pronta {
-			font-size: var(--fs-14);
-			border-radius: 6px;
-			border: 1px solid var(--gray-300);
-			padding: var(--p-8);
-		}
-	}
-
-	.content {
-		overflow-y: auto;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: var(--p-32) var(--p-16) 0 var(--p-16);
+		margin-top: var(--m-32);
 
 		&__title {
 			margin: 0;
@@ -231,6 +206,16 @@ onMounted(async () => {
 				transition: 0.5s;
 			}
 		}
+	}
+
+	.content {
+		overflow-y: auto;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-bottom: var(--m-16);
 
 		&__mensagens {
 			width: 100%;
@@ -270,22 +255,22 @@ onMounted(async () => {
 			}
 
 			&__texto {
+				background-color: var(--gray-300);
 				display: flex;
 				flex-direction: column;
 				width: fit-content;
 				font-size: var(--fs-14);
 				border-radius: 6px;
 				gap: var(--g-4);
-				padding: var(--p-16);
 
 				&--human {
 					background-color: var(--gray-100);
 					box-shadow: var(--shadow-baloon);
+					padding: var(--p-16);
 				}
 
 				&--roje {
-					padding-top: 0;
-					padding-left: 0;
+					padding: var(--p-16);
 				}
 			}
 		}
@@ -293,6 +278,23 @@ onMounted(async () => {
 
 	.footer {
 		width: 100%;
+
+		display: flex;
+		flex-direction: column;
+		gap: var(--g-16);
+
+		&__acoes-prontas {
+			display: flex;
+			flex-wrap: wrap;
+			gap: var(--p-8);
+		}
+
+		&__acao-pronta {
+			font-size: var(--fs-14);
+			border-radius: 6px;
+			border: 1px solid var(--gray-300);
+			padding: var(--p-8);
+		}
 
 		&__form {
 			display: flex;
